@@ -49,16 +49,21 @@ if __name__ == "__main__":
   argParser = ArgumentParser("Load custom graph")
   argParser.add_argument("-g", "--graphs", default=[1,2,3,11,12,13], nargs='+', type=int, help="Add the graph type here to display it")
   argParser.add_argument("-i", "--interactive", action="store_true", help="Draw network graph in interactive mode")
+  argParser.add_argument("-s", "--save", action="store_true", help="Save network into gephi format")
   args = argParser.parse_args()
-  print(args.interactive)
-  if not args.interactive:
-    if len(args.graphs) > 1:
-      Gs = []
-      for i in args.graphs:
-        Gs.append(load_custom_graph(i))
-      visualize_graphs(Gs, layout=nx.kamada_kawai_layout)
-    elif len(args.graphs) == 1:
-      visualize_graph(load_custom_graph(args.graphs[0]), display_label=False, node_size=50, layout=nx.kamada_kawai_layout)
+  if not args.save:
+    if not args.interactive:
+      if len(args.graphs) > 1:
+        Gs = []
+        for i in args.graphs:
+          Gs.append(load_custom_graph(i))
+        visualize_graphs(Gs, layout=nx.kamada_kawai_layout)
+      elif len(args.graphs) == 1:
+        visualize_graph(load_custom_graph(args.graphs[0]), display_label=False, node_size=50, layout=nx.kamada_kawai_layout)
+    else:
+      if len(args.graphs) >= 1:
+        interactively_visualize_graph(load_custom_graph(args.graphs[0]))
   else:
     if len(args.graphs) >= 1:
-      interactively_visualize_graph(load_custom_graph(args.graphs[0]))
+      type = args.graphs[0]
+      nx.write_gexf(load_custom_graph(type), f"network-{type}.gexf")

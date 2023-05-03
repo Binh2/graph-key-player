@@ -1,2 +1,4 @@
 **/__pycache__/
 /twitter_combined.txt
+network-*.gexf
+/network.html
