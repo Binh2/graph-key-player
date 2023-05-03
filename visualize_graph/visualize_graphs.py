@@ -1,6 +1,7 @@
+from typing import Callable
 import networkx as nx
 from matplotlib import pyplot as plt
-from .visualize_graph import visualize_node_feature_graph, visualize_edge_feature_graph
+from .visualize_graph import visualize_graph, visualize_node_feature_graph, visualize_edge_feature_graph
 
 
 def get_sizes():
@@ -16,7 +17,9 @@ def get_sizes():
     9: {"nrows": 3, "ncols": 3},
   })
 
-def visualize_graphs(Gs: list[nx.Graph], display_label=True, layout=nx.spring_layout):
+def visualize_graphs(Gs: list[nx.Graph | nx.DiGraph], 
+                     display_label: bool = True, 
+                     layout: Callable = nx.spring_layout):
   sizes = get_sizes()
   fig, axes = plt.subplots(**sizes[len(Gs)])
   ax = axes.flatten()
@@ -24,9 +27,8 @@ def visualize_graphs(Gs: list[nx.Graph], display_label=True, layout=nx.spring_la
     G = Gs[i]
     pos = layout(G)
     ax[i].set_xlabel(str(i+1))
-    nx.draw_networkx_nodes(G, pos, ax=ax[i])
-    if display_label: nx.draw_networkx_labels(G, pos, ax=ax[i])
-    nx.draw_networkx_edges(G, pos, ax=ax[i])
+    visualize_graph(G, display_label, ax[i], layout)
+
   plt.show()
 
 
